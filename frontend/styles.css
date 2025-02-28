@@ -603,3 +603,30 @@ tbody tr td.text-center {
     padding: 2rem;
     color: var(--text-light);
 }
+/* Ensure modal content has a max height */
+.modal-content {
+    max-height: 80vh; /* Prevents modal from exceeding viewport height */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Make modal body scrollable */
+.modal-body {
+    max-height: 60vh; /* Adjust as needed */
+    overflow-y: auto;
+    padding-right: 10px; /* Prevents scrollbar from overlapping content */
+}
+
+/* Custom scrollbar styling */
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background-color: var(--dark-gray);
+    border-radius: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: var(--gray);
+}

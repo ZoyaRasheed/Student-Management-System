@@ -44,7 +44,9 @@ let isEditing = false;
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
-    initializeApp();
+     initializeApp();
+
+    fetchStudents();
 });
 
 // Initialize the application
@@ -485,27 +487,84 @@ function handleUserSubmit(e) {
 }
 
 // Handle marks form submission
+// function handleMarksSubmit(e) {
+//     e.preventDefault();
+    
+//     const marksData = {
+//         user_id: parseInt(document.getElementById('user-select').value),
+//         exam_name: document.getElementById('exam-name').value,
+//         subjects_marks: {
+//             Math: parseInt(document.getElementById('math-marks').value),
+//             Science: parseInt(document.getElementById('science-marks').value),
+//             English: parseInt(document.getElementById('english-marks').value)
+//         },
+//         total_marks: {
+//             Math: parseInt(document.getElementById('math-total').value),
+//             Science: parseInt(document.getElementById('science-total').value),
+//             English: parseInt(document.getElementById('english-total').value)
+//         },
+//         date: document.getElementById('exam-date').value
+//     };
+    
+//     const marksId = document.getElementById('marks-id').value;
+    
+//     if (isEditing && marksId) {
+//         updateMarks(marksId, marksData);
+//     } else {
+//         createMarks(marksData);
+//     }
+// }
 function handleMarksSubmit(e) {
     e.preventDefault();
-    
+
+    const userSelect = document.getElementById('user-select');
+    const examName = document.getElementById('exam-name').value.trim();
+    const mathMarks = document.getElementById('math-marks').value.trim();
+    const scienceMarks = document.getElementById('science-marks').value.trim();
+    const englishMarks = document.getElementById('english-marks').value.trim();
+    const mathTotal = document.getElementById('math-total').value.trim();
+    const scienceTotal = document.getElementById('science-total').value.trim();
+    const englishTotal = document.getElementById('english-total').value.trim();
+    const examDate = document.getElementById('exam-date').value.trim();
+    const marksId = document.getElementById('marks-id').value;
+
+    if (!userSelect.value) {
+        alert("Please select a student.");
+        return;
+    }
+    if (!examName) {
+        alert("Please enter an exam name.");
+        return;
+    }
+    if (!mathMarks || !scienceMarks || !englishMarks) {
+        alert("Please enter all subject marks.");
+        return;
+    }
+    if (!mathTotal || !scienceTotal || !englishTotal) {
+        alert("Please enter total marks for each subject.");
+        return;
+    }
+    if (!examDate) {
+        alert("Please select an exam date.");
+        return;
+    }
+
     const marksData = {
-        user_id: parseInt(document.getElementById('user-select').value),
-        exam_name: document.getElementById('exam-name').value,
+        user_id: parseInt(userSelect.value),
+        exam_name: examName,
         subjects_marks: {
-            Math: parseInt(document.getElementById('math-marks').value),
-            Science: parseInt(document.getElementById('science-marks').value),
-            English: parseInt(document.getElementById('english-marks').value)
+            Math: parseInt(mathMarks) || 0,
+            Science: parseInt(scienceMarks) || 0,
+            English: parseInt(englishMarks) || 0
         },
         total_marks: {
-            Math: parseInt(document.getElementById('math-total').value),
-            Science: parseInt(document.getElementById('science-total').value),
-            English: parseInt(document.getElementById('english-total').value)
+            Math: parseInt(mathTotal) || 100,
+            Science: parseInt(scienceTotal) || 100,
+            English: parseInt(englishTotal) || 100
         },
-        date: document.getElementById('exam-date').value
+        date: examDate
     };
-    
-    const marksId = document.getElementById('marks-id').value;
-    
+
     if (isEditing && marksId) {
         updateMarks(marksId, marksData);
     } else {
@@ -580,4 +639,76 @@ function showToast(message, type = 'success') {
     setTimeout(() => {
         toast.remove();
     }, 3000);
+}
+let studentMap = {}; // Store student ID -> Name mapping
+
+async function fetchStudents() {
+    try {
+        const response = await fetch("http://localhost:3000/api/users");
+        const students = await response.json();
+
+        const studentSelect = document.getElementById("user-select"); // Correct dropdown
+        if (studentSelect) {
+            studentSelect.innerHTML = `<option value="">Select Student</option>`;
+
+            students.forEach((student) => {
+                const option = document.createElement("option");
+                option.value = student.id; // Store student ID
+                option.textContent = student.name;
+                studentSelect.appendChild(option);
+
+                // Store student name in map
+                studentMap[student.id] = student.name;
+            });
+
+            fetchMarks(); // Fetch marks after students are loaded
+        }
+    } catch (error) {
+        console.error("Error fetching students:", error);
+    }
+}
+
+
+async function fetchMarks() {
+    try {
+        const response = await fetch("http://localhost:3000/api/marks"); // Ensure you are using the correct API endpoint
+        let marks = await response.json();
+
+        const marksTable = document.getElementById("marksTable");
+        marksTable.innerHTML = `
+            <tr>
+                <th>ID</th>
+                <th>Student</th>
+                <th>Exam</th>
+                <th>Math</th>
+                <th>Science</th>
+                <th>English</th>
+                <th>Percentage</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        `;
+
+        marks.forEach((mark) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${mark.id}</td>
+                <td>${mark.user_name || "Unknown"}</td> <!-- Ensure this correctly accesses user_name -->
+                <td>${mark.exam_name}</td>
+                <td>${mark.subjects_marks.Math}/${mark.total_marks.Math}</td>
+                <td>${mark.subjects_marks.Science}/${mark.total_marks.Science}</td>
+                <td>${mark.subjects_marks.English}/${mark.total_marks.English}</td>
+                <td>${mark.percentage}%</td>
+                <td>${mark.date}</td>
+                <td>
+                    <button>Edit</button>
+                    <button>Delete</button>
+                </td>
+            `;
+            marksTable.appendChild(row);
+        });
+
+    } catch (error) {
+        console.error("Error fetching marks:", error);
+    }
 }
