@@ -1,0 +1,76 @@
+@baseUrl = http://127.0.0.1:5000
+
+### Server Health Check
+curl -X GET {{baseUrl}}/
+
+### Add a User
+curl -X POST {{baseUrl}}/users \
+     -H "Content-Type: application/json" \
+     -d '{
+          "name": "John Doe",
+          "email": "john@example.com",
+          "phone": "1234567890",
+          "student_class": "10A"
+     }'
+
+### Get All Users
+curl -X GET {{baseUrl}}/users
+
+### Update a User (replace :id)
+curl -X PUT {{baseUrl}}/users/1 \
+     -H "Content-Type: application/json" \
+     -d '{
+          "name": "John Updated",
+          "email": "john.updated@example.com",
+          "phone": "9876543210",
+          "student_class": "10B"
+     }'
+
+### Delete a User (replace :id)
+curl -X DELETE {{baseUrl}}/users/1
+
+### Add Student Marks
+curl -X POST {{baseUrl}}/marks \
+     -H "Content-Type: application/json" \
+     -d '{
+          "user_id": 4,
+          "exam_name": "Mid Term",
+          "subjects_marks": {
+               "Math": 85,
+               "Science": 90,
+               "English": 80
+          },
+          "total_marks": {
+               "Math": 100,
+               "Science": 100,
+               "English": 100
+          },
+          "date": "2024-02-27"
+     }'
+
+### Get Student Marks
+curl -X GET {{baseUrl}}/all_marks
+
+### Get Student Marks (replace :user_id)
+curl -X GET {{baseUrl}}/marks/1
+
+### Update Student Marks (replace :id)
+curl -X PUT {{baseUrl}}/marks/1 \
+     -H "Content-Type: application/json" \
+     -d '{
+          "exam_name": "Final Exam",
+          "subjects_marks": {
+               "Math": 90,
+               "Science": 95,
+               "English": 85
+          },
+          "total_marks": {
+               "Math": 100,
+               "Science": 100,
+               "English": 100
+          },
+          "date": "2024-06-15"
+     }'
+
+### Delete Student Marks (replace :id)
+curl -X DELETE {{baseUrl}}/marks/1

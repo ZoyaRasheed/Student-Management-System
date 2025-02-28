@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1><i class="fas fa-graduation-cap"></i> EduTrack</h1>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</li>
+                    <li data-section="students"><i class="fas fa-user-graduate"></i> Students</li>
+                    <li data-section="marks"><i class="fas fa-chart-bar"></i> Marks</li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <p>© 2025 EduTrack</p>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search..." id="search-input">
+                </div>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="theme-toggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="user-profile">
+                        <img src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff" alt="Admin">
+                        <span>Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-container">
+                <!-- Dashboard Section -->
+                <section id="dashboard" class="content-section active">
+                    <h2>Dashboard</h2>
+                    <div class="dashboard-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
+                            <div class="stat-info">
+                                <h3>Total Students</h3>
+                                <p id="total-students">Loading...</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+                            <div class="stat-info">
+                                <h3>Total Exams</h3>
+                                <p id="total-exams">Loading...</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                            <div class="stat-info">
+                                <h3>Average Score</h3>
+                                <p id="average-score">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-charts">
+                        <div class="chart-container">
+                            <h3>Performance Overview</h3>
+                            <canvas id="performance-chart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Recent Activity</h3>
+                            <div class="activity-list" id="recent-activity">
+                                <div class="activity-item skeleton"></div>
+                                <div class="activity-item skeleton"></div>
+                                <div class="activity-item skeleton"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Students Section -->
+                <section id="students" class="content-section">
+                    <div class="section-header">
+                        <h2>Students</h2>
+                        <button id="add-student-btn" class="primary-btn">
+                            <i class="fas fa-plus"></i> Add Student
+                        </button>
+                    </div>
+                    <div class="card">
+                        <div class="student-filters">
+                            <div class="search-container">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="student-search" placeholder="Search by name, email or class...">
+                            </div>
+                            <div class="filter-container">
+                                <select id="class-filter">
+                                    <option value="">All Classes</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="students-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Class</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="loading-row">
+                                        <td colspan="6">Loading students...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Marks Section -->
+                <section id="marks" class="content-section">
+                    <div class="section-header">
+                        <h2>Student Marks</h2>
+                        <button id="add-marks-btn" class="primary-btn">
+                            <i class="fas fa-plus"></i> Add Marks
+                        </button>
+                    </div>
+                    <div class="card">
+                        <div class="marks-filters">
+                            <div class="search-container">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="marks-search" placeholder="Search by student name or exam...">
+                            </div>
+                            <div class="filter-container">
+                                <select id="student-filter">
+                                    <option value="">All Students</option>
+                                </select>
+                                <select id="exam-filter">
+                                    <option value="">All Exams</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="marks-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Student</th>
+                                        <th>Exam</th>
+                                        <th>Date</th>
+                                        <th>Mathematics</th>
+                                        <th>Science</th>
+                                        <th>English</th>
+                                        <th>Average</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="loading-row">
+                                        <td colspan="9">Loading marks...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for adding/editing students -->
+    <div id="student-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="student-modal-title">Add New Student</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="student-form">
+                <input type="hidden" id="student-id">
+                <div class="form-group">
+                    <label for="student-name">Full Name</label>
+                    <input type="text" id="student-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="student-email">Email</label>
+                    <input type="email" id="student-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="student-phone">Phone</label>
+                    <input type="tel" id="student-phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="student-class">Class</label>
+                    <input type="text" id="student-class" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="secondary-btn" id="cancel-student-btn">Cancel</button>
+                    <button type="submit" class="primary-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for adding/editing marks -->
+    <div id="marks-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="marks-modal-title">Add New Marks</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="marks-form">
+                <input type="hidden" id="marks-id">
+                <div class="form-group">
+                    <label for="marks-student">Student</label>
+                    <select id="marks-student" required>
+                        <option value="">Select Student</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="marks-exam">Exam Name</label>
+                    <input type="text" id="marks-exam" required>
+                </div>
+                <div class="form-group">
+                    <label for="marks-date">Date</label>
+                    <input type="date" id="marks-date" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="marks-math">Mathematics</label>
+                        <div class="marks-input-group">
+                            <input type="number" id="marks-math" min="0" required>
+                            <span>out of</span>
+                            <input type="number" id="total-math" min="0" value="100" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="marks-science">Science</label>
+                        <div class="marks-input-group">
+                            <input type="number" id="marks-science" min="0" required>
+                            <span>out of</span>
+                            <input type="number" id="total-science" min="0" value="100" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="marks-english">English</label>
+                        <div class="marks-input-group">
+                            <input type="number" id="marks-english" min="0" required>
+                            <span>out of</span>
+                            <input type="number" id="total-english" min="0" value="100" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="secondary-btn" id="cancel-marks-btn">Cancel</button>
+                    <button type="submit" class="primary-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="confirm-title">Confirm Action</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="confirm-body">
+                <p id="confirm-message">Are you sure you want to proceed?</p>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="secondary-btn" id="cancel-confirm-btn">Cancel</button>
+                <button type="button" class="danger-btn" id="confirm-action-btn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <i id="toast-icon" class="fas fa-check-circle"></i>
+            <div class="toast-message">
+                <span id="toast-text">Operation completed successfully!</span>
+            </div>
+        </div>
+        <div class="toast-progress"></div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="scripts.js"></script>
+</body>
+</html>
