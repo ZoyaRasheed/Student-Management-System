@@ -94,8 +94,28 @@ def delete_user(id):
 
 @app.route('/all_marks', methods=['GET'])
 def get_all_marks():
-    marks = Marks.query.all()
-    return marks_list_schema.jsonify(marks)
+    marks = Marks.query.join(User, Marks.user_id == User.id) \
+                       .add_columns(User.id, User.name, Marks.id, Marks.exam_name, Marks.subjects_marks, 
+                                    Marks.total_marks, Marks.date, Marks.grade, Marks.percentage) \
+                       .all()
+    
+    result = [
+        {
+            "id": mark.id,
+            "user_id": mark.id, 
+            "user_name": mark.name,
+            "exam_name": mark.exam_name,
+            "subjects_marks": mark.subjects_marks,
+            "total_marks": mark.total_marks,
+            "date": mark.date,
+            "grade": mark.grade,
+            "percentage": mark.percentage
+        } 
+        for mark in marks
+    ]
+    
+    return jsonify(result)
+
 
 @app.route('/marks', methods=['POST'])
 def add_marks():
